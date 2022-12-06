@@ -1,13 +1,34 @@
 <?php
 /** @var array $musicAlbums */
+
 // Setup connection with database
-require_once 'includes/connection.php';
+
+// General settings
+$host       = "localhost";
+$database   = "music_collection";
+$user       = "root";
+$password   = "";
+
+$db = mysqli_connect($host, $user, $password, $database)
+or die("Error: " . mysqli_connect_error());;
+
 
 // Select all the albums from the database
+$query = 'SELECT * FROM `albums`';
+
+
+$result = mysqli_query($db, $query)
+or die('Error '.mysqli_error($db).' with query '.$query);
 
 // Store the albums in an array
-
+$albums = [];
+while($row = mysqli_fetch_assoc($result))
+{
+    // elke rij (dit is een album) wordt aan de array 'albums' toegevoegd.
+    $albums[] = $row;
+}
 // Close the connection
+mysqli_close($db);
 ?>
 <!doctype html>
 <html lang="en">
@@ -38,11 +59,11 @@ require_once 'includes/connection.php';
         </tr>
         </tfoot>
         <tbody>
-        <?php foreach ($musicAlbums as $index => $album) { ?>
+        <?php foreach ($albums as $index => $album) { ?>
             <tr>
                 <td><?= $index + 1 ?></td>
                 <td><?= $album['artist'] ?></td>
-                <td><?= $album['album'] ?></td>
+                <td><?= $album['name'] ?></td>
                 <td><?= $album['genre'] ?></td>
                 <td><?= $album['year'] ?></td>
                 <td><?= $album['tracks'] ?></td>
